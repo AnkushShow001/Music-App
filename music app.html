@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Music Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .player {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 50%;
+            background: #fff;
+            color: #333;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #ddd;
+        }
+        
+        #progress {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        #playlist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        #playlist li {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        #playlist li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="player">
+        <h2>🎵 My Music Player</h2>
+        <audio id="audio" controls hidden></audio>
+
+        <div>
+            <button onclick="prevSong()">⏮</button>
+            <button onclick="playPause()">▶️ / ⏸</button>
+            <button onclick="nextSong()">⏭</button>
+        </div>
+
+        <input type="range" id="progress" value="0">
+        <br>
+        <label>Volume: </label>
+        <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+
+        <h3>📂 Playlist</h3>
+        <ul id="playlist"></ul>
+    </div>
+
+    <script>
+        const songs = [{
+            title: "Song 1",
+            src: "https://youtu.be/hvKaPTmQBA8"
+        }, {
+            title: "Song 2",
+            src: "https://youtu.be/FqrXL5qhIes"
+        }, {
+            title: "Song 3",
+            src: "https://youtu.be/Ev8Ivsq497Q"
+        }];
+
+        const audio = document.getElementById("audio");
+        const progress = document.getElementById("progress");
+        const volume = document.getElementById("volume");
+        const playlist = document.getElementById("playlist");
+
+        let currentSong = 0;
+
+        // Load playlist
+        songs.forEach((song, index) => {
+            const li = document.createElement("li");
+            li.textContent = song.title;
+            li.onclick = () => loadSong(index);
+            playlist.appendChild(li);
+        });
+
+        function loadSong(index) {
+            currentSong = index;
+            audio.src = songs[index].src;
+            audio.play();
+            updatePlaylistUI();
+        }
+
+        function playPause() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        function nextSong() {
+            currentSong = (currentSong + 1) % songs.length;
+            loadSong(currentSong);
+        }
+
+        function prevSong() {
+            currentSong = (currentSong - 1 + songs.length) % songs.length;
+            loadSong(currentSong);
+        }
+
+        // Progress bar update
+        audio.addEventListener("timeupdate", () => {
+            progress.value = (audio.currentTime / audio.duration) * 100;
+        });
+
+        progress.addEventListener("input", () => {
+            audio.currentTime = (progress.value / 100) * audio.duration;
+        });
+
+        // Volume
+        volume.addEventListener("input", () => {
+            audio.volume = volume.value;
+        });
+
+        function updatePlaylistUI() {
+            [...playlist.children].forEach((li, index) => {
+                li.classList.toggle("active", index === currentSong);
+            });
+        }
+
+        // Auto play next song
+        audio.addEventListener("ended", nextSong);
+
+        // Load first song
+        loadSong(currentSong);
+    </script>
+</body>
+
+</html>
