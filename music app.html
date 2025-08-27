@@ -104,7 +104,7 @@
 
         let currentSong = 0;
 
-        // Load playlist
+ 
         songs.forEach((song, index) => {
             const li = document.createElement("li");
             li.textContent = song.title;
@@ -137,7 +137,6 @@
             loadSong(currentSong);
         }
 
-        // Progress bar update
         audio.addEventListener("timeupdate", () => {
             progress.value = (audio.currentTime / audio.duration) * 100;
         });
@@ -146,7 +145,7 @@
             audio.currentTime = (progress.value / 100) * audio.duration;
         });
 
-        // Volume
+       
         volume.addEventListener("input", () => {
             audio.volume = volume.value;
         });
@@ -157,12 +156,13 @@
             });
         }
 
-        // Auto play next song
+      
         audio.addEventListener("ended", nextSong);
 
-        // Load first song
+      
         loadSong(currentSong);
     </script>
 </body>
+
 
 </html>
